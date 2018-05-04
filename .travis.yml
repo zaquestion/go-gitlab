@@ -1,5 +1,8 @@
 language: go
 
+# use containers which run faster and have cache
+sudo: false
+
 go:
   - 1.8.x
   - 1.9.x
@@ -26,7 +29,7 @@ jobs:
     - stage: deploy
       go: 1.10.x
       script:
-        - sed -i "s|libraryVersion =.\+$|libraryVersion = $(echo ${TRAVIS_TAG} | tr -d 'v')" gitlab.go
+        - sed -i "s|libraryVersion =.\+$|libraryVersion = $(echo ${TRAVIS_TAG} | tr -d 'v')|" gitlab.go
         - git config --global user.email "travis@travis-ci.org"
         - git config --global user.name "Travis CI"
         - git remote add origin-https https://${GITHUB_TOKEN}@github.com/zaquestion/go-gitlab.git
