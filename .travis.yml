@@ -25,3 +25,19 @@ matrix:
   allow_failures:
     - go: master
   fast_finish: true
+
+deploy:
+  provider: script
+  on:
+    branch: master
+    tags: true
+  script:
+    - sed -i "s|libraryVersion =.\+$|libraryVersion = $(echo ${TRAVIS_TAG} | tr -d 'v')" gitlab.go
+    - git config --global user.email "travis@travis-ci.org"
+    - git config --global user.name "Travis CI"
+    - git remote add origin-https https://${GITHUB_TOKEN}@github.com/xanzy/go-gitlab.git
+    - git fetch origin-https
+    - git checkout master
+    - git add gitlab.go
+    - git commit -m "(docs) ${TRAVIS_TAG}"
+    - git push origin-https master
